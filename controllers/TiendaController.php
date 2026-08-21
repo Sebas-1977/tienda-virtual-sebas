@@ -16,13 +16,27 @@ class TiendaController
             session_start();
         }
 
-        // $productos = Producto::all(); // Lo conectamos cuando armemos el catálogo real
-        // $categorias = Categoria::all();
+        // Solo productos activos (todavía no hay filtro a nivel SQL, se filtra acá)
+        $productos = array_values(array_filter(
+            Producto::all(),
+            fn(Producto $p): bool => $p->activo === 1
+        ));
+
+        // Destacados para el carrusel: primero los que tienen oferta;
+        // si no hay ninguno, se usan los primeros productos del catálogo
+        $enOferta = array_values(array_filter(
+            $productos,
+            fn(Producto $p): bool => $p->tieneOferta()
+        ));
+
+        $destacados = count($enOferta) > 0
+            ? array_slice($enOferta, 0, 9)
+            : array_slice($productos, 0, 9);
 
         $router->render('tienda/index', [
-            'titulo' => 'Tienda Virtual'
-            // 'productos' => $productos,
-            // 'categorias' => $categorias
+            'titulo' => 'Tienda Virtual',
+            'productos' => $productos,
+            'destacados' => $destacados
         ]);
     }
 
@@ -35,7 +49,8 @@ class TiendaController
         $id = (int) ($_GET['id'] ?? 0);
         $producto = Producto::find($id);
 
-        if (!$producto) {
+        // Si no existe o está inactivo, redirigimos al catálogo
+        if (!$producto || $producto->activo !== 1) {
             header('Location: /');
             exit;
         }

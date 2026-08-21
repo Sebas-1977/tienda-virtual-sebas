@@ -791,3 +791,292 @@ h1, h2, h3, h4,
     white-space: nowrap;
     border: 0;
 }
+
+/* ==========================================
+   BLOQUE: tienda (hero público)
+   ========================================== */
+.tienda__hero {
+    padding: 3rem 0 2rem;
+    text-align: center;
+}
+
+.tienda__titulo {
+    font-size: 2.2rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.tienda__subtitulo {
+    color: var(--color-texto-secundario);
+    margin: 0;
+}
+
+.tienda__vacio {
+    color: var(--color-texto-secundario);
+    text-align: center;
+    padding: 2rem 0;
+}
+
+/* ==========================================
+   BLOQUE: catalogo (secciones públicas)
+   ========================================== */
+.catalogo__destacados,
+.catalogo__seccion {
+    padding: 1.5rem 0 3rem;
+}
+
+.catalogo__subtitulo {
+    font-size: 1.5rem;
+    margin: 0 0 1.5rem 0;
+}
+
+.catalogo__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+/* ==========================================
+   BLOQUE: carrusel
+   ========================================== */
+.carrusel {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.carrusel__pista {
+    display: flex;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding: 0.25rem 0.25rem 1rem;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-fondo-input) transparent;
+}
+
+.carrusel__pista::-webkit-scrollbar {
+    height: 6px;
+}
+
+.carrusel__pista::-webkit-scrollbar-thumb {
+    background-color: var(--color-fondo-input);
+    border-radius: 999px;
+}
+
+.carrusel__slide {
+    flex: 0 0 220px;
+    scroll-snap-align: start;
+}
+
+@media (min-width: 640px) {
+    .carrusel__slide {
+        flex-basis: 260px;
+    }
+}
+
+.carrusel__flecha {
+    flex-shrink: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--borde-suave);
+    background-color: var(--color-fondo-tarjeta);
+    color: var(--color-texto-principal);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.carrusel__flecha:hover {
+    background-color: var(--color-fondo-input);
+}
+
+@media (min-width: 768px) {
+    .carrusel__flecha {
+        display: flex;
+    }
+}
+
+/* ==========================================
+   BLOQUE: tarjeta-producto
+   ========================================== */
+.tarjeta-producto {
+    background-color: var(--color-fondo-tarjeta);
+    border-radius: 1rem;
+    box-shadow: var(--sombra-tarjeta);
+    border: 1px solid var(--borde-suave);
+    overflow: hidden;
+    height: 100%;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.tarjeta-producto:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-primario);
+}
+
+.tarjeta-producto__enlace {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.tarjeta-producto__imagen-wrap {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background-color: var(--color-fondo-input);
+    overflow: hidden;
+}
+
+.tarjeta-producto__imagen {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.tarjeta-producto__sin-imagen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: var(--color-texto-secundario);
+    opacity: 0.6;
+}
+
+.tarjeta-producto__badges {
+    position: absolute;
+    top: 0.6rem;
+    left: 0.6rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.tarjeta-producto__badge {
+    background-color: #3dd56d;
+    color: #0d2818;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+}
+
+.tarjeta-producto__badge--agotado {
+    background-color: var(--color-peligro);
+    color: #ffffff;
+}
+
+.tarjeta-producto__body {
+    padding: 1rem 1.1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.tarjeta-producto__nombre {
+    font-size: 1.05rem;
+    margin: 0;
+    color: var(--color-texto-principal);
+}
+
+.tarjeta-producto__precios {
+    margin-top: auto;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* ==========================================
+   Detalle de Producto
+   ========================================== */
+.detalle-producto {
+    padding: 3rem 1.5rem;
+}
+
+.detalle-producto__card {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    background-color: var(--card-bg, #1e293b);
+    padding: 2.5rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+@media (min-width: 768px) {
+    .detalle-producto__card {
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+    }
+}
+
+.detalle-producto__imagen {
+    width: 100%;
+    max-height: 420px;
+    object-fit: cover;
+    border-radius: 8px;
+    background-color: #0f172a;
+}
+
+.detalle-producto__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.detalle-producto__nombre {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.detalle-producto__precio {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.precio--tachado {
+    text-decoration: line-through;
+    color: #64748b;
+    font-size: 1.25rem;
+}
+
+.precio--oferta {
+    color: #38bdf8;
+}
+
+.detalle-producto__descripcion {
+    color: #cbd5e1;
+    line-height: 1.6;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.detalle-producto__stock {
+    font-size: 0.9rem;
+    color: #94a3b8;
+    margin: 0;
+}
