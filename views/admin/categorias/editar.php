@@ -1,3 +1,10 @@
+<?php
+/**
+ * @var string $titulo
+ * @var \Model\Categoria $categoria
+ * @var array $alertas
+ */
+?>
 <main class="panel-admin contenedor">
     <header class="panel-admin__header">
         <h1 class="panel-admin__titulo"><?php echo $titulo; ?></h1>

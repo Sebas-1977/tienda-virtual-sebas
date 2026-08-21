@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var string $titulo
+ */
+?>
 <main class="carrito contenedor">
     <header class="carrito__header">
         <h1 class="carrito__titulo"><?php echo $titulo; ?></h1>

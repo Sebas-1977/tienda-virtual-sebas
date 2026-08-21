@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var \Model\Categoria[] $categorias
+ */
+?>
 <form action="<?php echo $accion; ?>" method="POST" class="formulario-admin" novalidate>
 
     <div class="campo">

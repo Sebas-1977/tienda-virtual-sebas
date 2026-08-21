@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var string $titulo
+ */
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>

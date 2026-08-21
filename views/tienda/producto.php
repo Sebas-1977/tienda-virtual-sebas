@@ -1,3 +1,9 @@
+<?php
+/**
+ * @var string $titulo
+ * @var \Model\Producto $producto
+ */
+?>
 <main class="detalle-producto contenedor">
     <?php include_once __DIR__ . '/../templates/alertas.php'; ?>
 
