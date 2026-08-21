@@ -1,0 +1,23 @@
+{
+    "name": "seba/tienda_seba",
+    "description": "Pequeña tienda virtual en PHP, JS, CSS, HTML, MVC, POO",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Sebastian Rodriguez",
+            "email": "sebasrodridanu@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "MVC\\" : "./",
+            "Controllers\\" : "./controllers",
+            "Model\\" : "./models", 
+            "Classes\\" : "./classes"
+        }
+    },
+    "require": {
+        "phpmailer/phpmailer": "^7.1",
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
