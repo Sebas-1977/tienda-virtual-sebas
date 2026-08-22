@@ -26,6 +26,11 @@
                     <h2 class="header__nombre">Tienda<span>Virtual</span></h2>
                 </a>
             </div>
+
+            <?php 
+            // 1. Calculamos la cantidad total de productos en el carrito
+            $totalCarrito = array_reduce($_SESSION['carrito'] ?? [], fn(int $acc, array $item) => $acc + $item['cantidad'], 0);
+            ?>
             
             <nav class="navegacion" aria-label="Navegación principal">
                 <a href="/" class="navegacion__enlace">Inicio</a>
@@ -47,7 +52,13 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
+
+                <!-- POSICIÓN RECOMENDADA PARA EL CARRITO -->
+                <a href="/carrito" class="navegacion__enlace">
+                    Carrito (<?php echo $totalCarrito; ?>)
+                </a>
                 
+                <!-- Bloque de Autenticación / Usuario -->
                 <?php if (isset($_SESSION['login']) && $_SESSION['login']): ?>
     
                     <?php if (isset($_SESSION['admin']) && $_SESSION['admin'] === 1): ?>

@@ -63,15 +63,15 @@ abstract class ActiveRecord
         return array_shift( $resultado );
     }
 
-    // Obtener un número limitado de registros
+        // Obtener un número limitado de registros
     public static function get(int  $limite): ?static {
         $query = "SELECT * FROM " . static::$tabla . " LIMIT " . (int)$limite;
         $resultado = self::consultarSQL($query);
         return array_shift( $resultado );
     }
 
-    // Búsqueda Where con Columna 
-    public static function where(string $columna, mixed $valor): static {
+        // Búsqueda Where con Columna 
+    public static function where(string $columna, mixed $valor): ?static {
         $valorSanitizado = addslashes((string)$valor);
         $query = "SELECT * FROM " . static::$tabla . " WHERE {$columna} = '{$valorSanitizado}'";
         $resultado = self::consultarSQL($query);
@@ -90,41 +90,82 @@ abstract class ActiveRecord
         return self::consultarSQL($consulta);
     }
 
-    // Crea un nuevo registro
-    public function crear() {
-        // Sanitizar los datos
-        $atributos = $this->sanitizarAtributos();
+    // // Crea un nuevo registro
+    // public function crear() {
+    //     // Sanitizar los datos
+    //     $atributos = $this->sanitizarAtributos();
 
-        // Insertar en la base de datos
-        $query = " INSERT INTO " . static::$tabla . " ( ";
-        $query .= join(', ', array_keys($atributos));
-        $query .= " ) VALUES ('"; 
-        $query .= join("', '", array_values($atributos));
-        $query .= "') ";
+    //     // Insertar en la base de datos
+    //     $query = " INSERT INTO " . static::$tabla . " ( ";
+    //     $query .= join(', ', array_keys($atributos));
+    //     $query .= " ) VALUES ('"; 
+    //     $query .= join("', '", array_values($atributos));
+    //     $query .= "') ";
         
-        // PDO usa exec() para INSERT/UPDATE/DELETE
+    //     // PDO usa exec() para INSERT/UPDATE/DELETE
+    //     $resultado = self::$db->exec($query);
+
+    //     return [
+    //        'resultado' =>  $resultado,
+    //        'id' => self::$db->lastInsertId()
+    //     ];
+    // }
+
+    // public function actualizar() {
+    //     // Sanitizar los datos
+    //     $atributos = $this->sanitizarAtributos();
+
+    //     // Iterar para ir agregando cada campo de la BD
+    //     $valores = [];
+    //     foreach($atributos as $key => $value) {
+    //         $valores[] = "{$key}='{$value}'";
+    //     }
+
+    //     $query = "UPDATE " . static::$tabla ." SET ";
+    //     $query .=  join(', ', $valores );
+    //     $query .= " WHERE id = " . (int)$this->id;
+    //     $query .= " LIMIT 1 "; 
+
+    //     $resultado = self::$db->exec($query);
+    //     return $resultado;
+    // }
+
+        public function crear() {
+        $atributos = $this->atributos();
+
+        $columnas = array_keys($atributos);
+        $valores = array_map(function ($valor) {
+            return is_null($valor) ? 'NULL' : "'" . addslashes((string) $valor) . "'";
+        }, array_values($atributos));
+
+        $query = "INSERT INTO " . static::$tabla . " (";
+        $query .= join(', ', $columnas);
+        $query .= ") VALUES (";
+        $query .= join(', ', $valores);
+        $query .= ")";
+
         $resultado = self::$db->exec($query);
 
         return [
-           'resultado' =>  $resultado,
-           'id' => self::$db->lastInsertId()
+            'resultado' => $resultado,
+            'id' => self::$db->lastInsertId()
         ];
     }
 
     public function actualizar() {
-        // Sanitizar los datos
-        $atributos = $this->sanitizarAtributos();
+        $atributos = $this->atributos();
 
-        // Iterar para ir agregando cada campo de la BD
-        $valores = [];
-        foreach($atributos as $key => $value) {
-            $valores[] = "{$key}='{$value}'";
+        $sets = [];
+        foreach ($atributos as $key => $value) {
+            $sets[] = is_null($value)
+                ? "{$key} = NULL"
+                : "{$key} = '" . addslashes((string) $value) . "'";
         }
 
-        $query = "UPDATE " . static::$tabla ." SET ";
-        $query .=  join(', ', $valores );
-        $query .= " WHERE id = " . (int)$this->id;
-        $query .= " LIMIT 1 "; 
+        $query = "UPDATE " . static::$tabla . " SET ";
+        $query .= join(', ', $sets);
+        $query .= " WHERE id = " . (int) $this->id;
+        $query .= " LIMIT 1";
 
         $resultado = self::$db->exec($query);
         return $resultado;
@@ -212,11 +253,38 @@ abstract class ActiveRecord
         return $sanitizado;
     }
 
-    public function sincronizar($args=[]) { 
-        foreach($args as $key => $value) {
-          if(property_exists($this, $key) && !is_null($value)) {
-            $this->$key = $value;
-          }
+    public function sincronizar(array $args = []): void
+    {
+        foreach ($args as $key => $value) {
+            if (!property_exists($this, $key)) {
+                continue;
+            }
+
+            $propiedad = new ReflectionProperty($this, $key);
+            $tipo = $propiedad->getType();
+
+            // Si el campo es nullable y llega vacío ('' o null), lo dejamos en NULL
+            if ($tipo instanceof ReflectionNamedType && $tipo->allowsNull() && ($value === '' || $value === null)) {
+                $this->$key = null;
+                continue;
+            }
+
+            // Si no es nullable pero llega vacío, no lo tocamos (evita castear '' a 0 sin querer)
+            if ($value === '' || $value === null) {
+                continue;
+            }
+
+            if ($tipo instanceof ReflectionNamedType) {
+                $this->$key = match ($tipo->getName()) {
+                    'int' => (int) $value,
+                    'float' => (float) $value,
+                    'bool' => (bool) $value,
+                    'string' => (string) $value,
+                    default => $value,
+                };
+            } else {
+                $this->$key = $value;
+            }
         }
     }
 }

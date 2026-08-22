@@ -8,6 +8,11 @@ use Controllers\AdminController; // <-- Agregamos el controlador del Admin
 use Controllers\TiendaController; // <-- Nuevo controlador para la tienda pública
 use Controllers\CategoriaController;
 use Controllers\ProductoController;
+use Controllers\CheckoutController;
+use Controllers\PedidoController;
+use Controllers\AdminPedidoController;
+
+// ...
 
 $router = new Router();
 
@@ -19,6 +24,15 @@ $router->get('/productos', [TiendaController::class, 'productos']);
 $router->get('/categorias', [TiendaController::class, 'categorias']);
 $router->get('/producto', [TiendaController::class, 'producto']);
 $router->get('/carrito', [TiendaController::class, 'carrito']);
+$router->post('/carrito/agregar', [TiendaController::class, 'agregarCarrito']);
+$router->post('/carrito/actualizar', [TiendaController::class, 'actualizarCarrito']);
+$router->post('/carrito/eliminar', [TiendaController::class, 'eliminarCarrito']);
+$router->post('/carrito/vaciar', [TiendaController::class, 'vaciarCarrito']);
+
+$router->get('/checkout', [CheckoutController::class, 'index']);
+$router->post('/checkout', [CheckoutController::class, 'procesar']);
+
+$router->get('/mis-pedidos', [PedidoController::class, 'misPedidos']);
 
 // ---------------------------------
 // LOGIN / CUENTA
@@ -64,6 +78,8 @@ $router->get('/admin/productos/editar', [ProductoController::class, 'editar']);
 $router->post('/admin/productos/editar', [ProductoController::class, 'editar']);
 $router->post('/admin/productos/eliminar', [ProductoController::class, 'eliminar']);
 
+$router->get('/admin/pedidos', [AdminPedidoController::class, 'index']);
+$router->post('/admin/pedidos/cambiar-estado', [AdminPedidoController::class, 'cambiarEstado']);
 // ZONA DE PROYECTOS
 
 // API para las tareas
