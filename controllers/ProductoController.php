@@ -41,7 +41,10 @@ class ProductoController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $producto->sincronizar($_POST);
-            $alertas = $producto->validar();
+            $producto->activo = isset($_POST['activo']) ? 1 : 0; // el checkbox no viaja si está destildado
+            $producto->validar();
+            self::procesarImagen($producto);
+            $alertas = Producto::getAlertas();
 
             if (empty($alertas)) {
                 $resultado = $producto->guardar();
@@ -79,7 +82,10 @@ class ProductoController
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $producto->sincronizar($_POST);
-            $alertas = $producto->validar();
+            $producto->activo = isset($_POST['activo']) ? 1 : 0; // el checkbox no viaja si está destildado
+            $producto->validar();
+            self::procesarImagen($producto);
+            $alertas = Producto::getAlertas();
 
             if (empty($alertas)) {
                 $resultado = $producto->guardar();
@@ -100,6 +106,48 @@ class ProductoController
         ]);
     }
 
+    private static function procesarImagen(Producto $producto): void
+    {
+        if (empty($_FILES['imagen']['name'])) {
+            return;
+        }
+
+        $archivo = $_FILES['imagen'];
+
+        if ($archivo['error'] !== UPLOAD_ERR_OK) {
+            Producto::setAlerta('error', 'Hubo un error al subir la imagen');
+            return;
+        }
+
+        $permitidas = ['jpg', 'jpeg', 'png', 'webp'];
+        $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($extension, $permitidas, true)) {
+            Producto::setAlerta('error', 'Formato no permitido (usá jpg, png o webp)');
+            return;
+        }
+
+        if ($archivo['size'] > 2 * 1024 * 1024) {
+            Producto::setAlerta('error', 'La imagen no puede pesar más de 2MB');
+            return;
+        }
+
+        $directorio = __DIR__ . '/../public/img/productos';
+        if (!is_dir($directorio)) {
+            mkdir($directorio, 0755, true);
+        }
+
+        $nombreArchivo = uniqid('producto_', true) . '.' . $extension;
+        $rutaDestino = $directorio . '/' . $nombreArchivo;
+
+        if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+            self::eliminarImagenSiPropia($producto->imagen_url);
+            $producto->imagen_url = '/img/productos/' . $nombreArchivo;
+        } else {
+            Producto::setAlerta('error', 'No se pudo guardar la imagen en el servidor');
+        }
+    }
+
     public static function eliminar(): void
     {
         isAdmin();
@@ -108,10 +156,24 @@ class ProductoController
         $producto = Producto::find($id);
 
         if ($producto) {
+            self::eliminarImagenSiPropia($producto->imagen_url);
             $producto->eliminar();
         }
 
         header('Location: /admin/productos');
         exit;
+    }
+
+    private static function eliminarImagenSiPropia(?string $imagenUrl): void
+    {
+        if (empty($imagenUrl) || !str_starts_with($imagenUrl, '/img/productos/')) {
+            return;
+        }
+
+        $ruta = __DIR__ . '/../public' . $imagenUrl;
+
+        if (file_exists($ruta)) {
+            @unlink($ruta);
+        }
     }
 }

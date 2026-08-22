@@ -1,12 +1,11 @@
 <?php
 /**
  * @var string $titulo
- * @var \Model\Pedido[] $pedidos
- * @var array $detallesPorPedido
+ * @var \Model\Usuario[] $usuarios
  * @var string $busqueda
  * @var int $pagina
  * @var int $totalPaginas
- * @var string[] $estados
+ * @var int $idUsuarioActual
  */
 ?>
 <div class="panel-admin contenedor">
@@ -17,11 +16,11 @@
 
     <?php include_once __DIR__ . '/../../templates/alertas.php'; ?>
 
-    <form action="/admin/pedidos" method="GET" class="panel-admin__busqueda">
+    <form action="/admin/usuarios" method="GET" class="panel-admin__busqueda">
         <input
             type="text"
             name="busqueda"
-            placeholder="Buscar por cliente, email o # de pedido..."
+            placeholder="Buscar por nombre, apellido o email..."
             value="<?php echo s($busqueda); ?>"
         >
         <button type="submit" class="boton boton--primario boton--pequeño">Buscar</button>
@@ -33,7 +32,7 @@
         <nav class="paginacion">
             <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
                 
-                <a href="/admin/pedidos?pagina=<?php echo $i; ?>&busqueda=<?php echo urlencode($busqueda); ?>"
+                    href="/admin/usuarios?pagina=<?php echo $i; ?>&busqueda=<?php echo urlencode($busqueda); ?>"
                     class="paginacion__enlace <?php echo $i === $pagina ? 'paginacion__enlace--activo' : ''; ?>"
                 >
                     <?php echo $i; ?>

@@ -7,20 +7,21 @@
 <main class="detalle-producto contenedor">
     <?php include_once __DIR__ . '/../templates/alertas.php'; ?>
 
+  <a  href="/productos"
+    class="detalle-producto__volver"
+    onclick="if (document.referrer.includes(window.location.host)) { history.back(); return false; }"
+    >
+        ← Volver
+    </a>
     <article class="detalle-producto__card">
        
         <div class="detalle-producto__imagen-wrap">
-            <?php if ($producto->imagen_url): ?>
-                <img 
-                    src="<?php echo s($producto->imagen_url); ?>" 
-                    alt="<?php echo s($producto->nombre); ?>"
-                    class="detalle-producto__imagen"
-                >
-            <?php else: ?>
-                <div class="detalle-producto__sin-imagen" aria-hidden="true">
-                    <span>📦</span>
-                </div>
-            <?php endif; ?>
+            <img
+                src="<?php echo s($producto->imagen_url ?: '/img/productos/sin-imagen.svg'); ?>"
+                alt="<?php echo s($producto->nombre); ?>"
+                class="detalle-producto__imagen"
+                onerror="this.onerror=null;this.src='/img/productos/sin-imagen.svg';"
+            >
 
             <?php if ($producto->tieneOferta()): ?>
                 <span class="detalle-producto__badge">Oferta</span>

@@ -11,8 +11,7 @@ use Controllers\ProductoController;
 use Controllers\CheckoutController;
 use Controllers\PedidoController;
 use Controllers\AdminPedidoController;
-
-// ...
+use Controllers\AdminUsuarioController;
 
 $router = new Router();
 
@@ -80,6 +79,12 @@ $router->post('/admin/productos/eliminar', [ProductoController::class, 'eliminar
 
 $router->get('/admin/pedidos', [AdminPedidoController::class, 'index']);
 $router->post('/admin/pedidos/cambiar-estado', [AdminPedidoController::class, 'cambiarEstado']);
+
+$router->get('/admin/usuarios', [AdminUsuarioController::class, 'index']);
+$router->get('/admin/usuarios/editar', [AdminUsuarioController::class, 'editar']);
+$router->post('/admin/usuarios/editar', [AdminUsuarioController::class, 'editar']);
+$router->post('/admin/usuarios/cambiar-rol', [AdminUsuarioController::class, 'cambiarRol']);
+$router->post('/admin/usuarios/eliminar', [AdminUsuarioController::class, 'eliminar']);
 // ZONA DE PROYECTOS
 
 // API para las tareas

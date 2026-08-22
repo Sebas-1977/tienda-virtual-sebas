@@ -3,7 +3,7 @@
  * @var \Model\Categoria[] $categorias
  */
 ?>
-<form action="<?php echo $accion; ?>" method="POST" class="formulario-admin" novalidate>
+<form action="<?php echo $accion; ?>" method="POST" enctype="multipart/form-data" class="formulario-admin" novalidate>
 
     <div class="campo">
         <label for="categoria_id">
@@ -93,14 +93,23 @@
     </div>
 
     <div class="campo">
-        <label for="imagen_url">URL de la imagen</label>
-        <input 
-            type="url" 
-            id="imagen_url" 
-            name="imagen_url" 
-            placeholder="https://..."
-            value="<?php echo s($producto->imagen_url ?? ''); ?>"
+        <label for="imagen">Imagen del producto</label>
+        <input
+            type="file"
+            id="imagen"
+            name="imagen"
+            accept="image/png, image/jpeg, image/webp"
         >
+        <?php if (!empty($producto->imagen_url)): ?>
+            <div class="formulario-admin__preview">
+                <img
+                    src="<?php echo s($producto->imagen_url); ?>"
+                    alt="Imagen actual"
+                    onerror="this.onerror=null;this.src='/img/productos/sin-imagen.svg';"
+                >
+                <small>Imagen actual — subí una nueva para reemplazarla</small>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="campo campo--checkbox">

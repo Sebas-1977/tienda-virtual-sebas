@@ -10,6 +10,7 @@
 ?>
 <main class="panel-admin contenedor">
     <header class="panel-admin__header">
+        <a href="/admin" class="panel-admin__volver">← Panel Admin</a>
         <h1 class="panel-admin__titulo"><?php echo $titulo; ?></h1>
         <a href="/admin/categorias/crear" class="boton boton--primario">+ Nueva Categoría</a>
     </header>

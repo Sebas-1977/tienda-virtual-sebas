@@ -4,16 +4,13 @@
 <article class="tarjeta-producto">
     <a href="/producto?id=<?php echo $p->id; ?>" class="tarjeta-producto__enlace">
         <div class="tarjeta-producto__imagen-wrap">
-            <?php if ($p->imagen_url): ?>
-                <img src="<?php echo s($p->imagen_url); ?>"
-                     alt="<?php echo s($p->nombre); ?>"
-                     class="tarjeta-producto__imagen"
-                     loading="lazy">
-            <?php else: ?>
-                <div class="tarjeta-producto__sin-imagen" aria-hidden="true">
-                    <span>📦</span>
-                </div>
-            <?php endif; ?>
+            <img
+                src="<?php echo s($p->imagen_url ?: '/img/productos/sin-imagen.svg'); ?>"
+                alt="<?php echo s($p->nombre); ?>"
+                class="tarjeta-producto__imagen"
+                loading="lazy"
+                onerror="this.onerror=null;this.src='/img/productos/sin-imagen.svg';"
+            >
 
             <div class="tarjeta-producto__badges">
                 <?php if ($p->tieneOferta()): ?>
